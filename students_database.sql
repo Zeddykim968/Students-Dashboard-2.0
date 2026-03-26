@@ -1,0 +1,68 @@
+
+--students data
+CREATE TABLE students (
+    student_id SERIAL PRIMARY KEY,      -- unique user ID
+	reg_no VARCHAR(50)
+    name VARCHAR(50) NOT NULL,
+    email VARCHAR(50),
+    password VARCHAR(50),
+    group_id SERIAL REFERENCES student_groups(group_id)
+);
+
+INSERT INTO students(student_id, student_name, student_registration_no student_email,student_password, group_id) VALUES
+
+  (1, 'Brenda Wambui', 'B11/0706/2025', 'brenda.wambui@example.com', 'password123', 1),
+    (2, 'Becky Biwott', 'B11/0698/2025', 'becky.biwott@example.com', 'password456', 1),
+    (3, 'Ishmael Kipkemoi', 'B11/10701/2025', 'ishmael.kipkemoi@example.com', 'password789', 1),
+    (4, 'Shem Maingi', 'B11/0691/2025', 'shem.maingi@example.com', 'password012', 1),
+    (5, 'David Kiarie', 'B11S/20790/2025', 'david.kiarie@example.com', 'password345', 1),
+    (6, 'Felix Owino', 'B11/0726/2025', 'felix.owino@example.com', 'password678', 1),
+    (7, 'Nisah Muroki', 'B11/0706/2025', 'nisah.muroki@example.com', 'password901', 2),
+    (8, 'Christine Atieno', 'B11S/20072/2025', 'christine.atieno@example.com', 'password234', 2),
+    (9, 'Clement Maina', 'B11/0714/2025', 'clement.maina@example.com', 'password567', 2),
+    (10, 'Cammy Akut', 'B11S/20097/2025', 'cammy.akut@example.com', 'password890', 2),
+    (11, 'Okindo Leon', 'B11/0712/2025', 'okindo.leon@example.com', 'password123', 2),
+    (12, 'Eaton Amaru', 'B11/0697/2025', 'eaton.amaru@example.com', 'password456', 2),
+    (13, 'Stacy Osumba', 'B11S/20108/2025', 'stacy.osumba@example.com', 'password789', 3),
+    (14, 'Lynet Kanene', 'B11/0705/2025', 'lynet.kanene@example.com', 'password012', 3),
+    (15, 'Keith Mukambi', 'B11S/20076/2025', 'keith.mukambi@example.com', 'password345', 3),
+    (16, 'Erick Muthomi', 'B11/0713/2025', 'erick.muthomi@example.com', 'password678', 3),
+    (17, 'Joe Matara', 'B11S/21428/2025', 'joe.matara@example.com', 'password901', 3),
+    (18, 'Alvin Mwangi', 'B11/0716/2025', 'alvin.mwangi@example.com', 'password123', 3),
+    (19, 'Sally Njoki', 'B11/0710/2025', 'sally.njoki@example.com', 'password456', 4),
+    (20, 'Ibrahim Kiroga', 'B11/0707/2025', 'ibrahim.kiroga@example.com', 'password789', 4),
+    (21, 'Bravin Osoro', 'B11/0733/2025', 'bravin.osoro@example.com', 'password012', 4),
+    (22, 'Peter Kioko','B11/204149/2025', 'peter.kioko@example.com', 'password345', 4),
+    (23, 'Ian kariri', 'B11/069/2025', 'ian.kariri@example.com', 'password678', 4),
+    (24, 'Collince Odhiambo', 'B11/0731/2025', 'collince.odhiambo@example.com', 'password901', 4),
+    (25, 'Jerica Onita', 'B11S/21121/2025', 'jerica.onita@example.com', 'password234', 5),
+    (26, 'Odiwuor Collines', 'B11/0728/2025', 'odiwuor.collines@example.com', 'password567', 5),
+    (27, 'Peterson Moguche', 'B11/0734/2025', 'peterson.moguche@example.com', 'password577', 5),
+    (28, 'Leon Sefu', 'B11/0723/2025', 'leon.sefu@example.com', 'password890', 5),
+    (29, 'Jerome Teddy', 'B11/0736/2025', 'jerome.teddy@example.com', 'password123', 5),
+    (30, 'Bramwel Elijah', 'B11/0699/2025', 'bramwel.elijah@example.com', 'password356', 5),
+    (31, 'Gloria Ngila','B11/0709/2025', 'gloria.ngila@example.com', 'password222',6),
+    (32, 'Samuel Gachimu', 'B11/0700/2025', 'samuel.gachimu@example.com', 'password333', 6),
+    (33, 'Elijah Getui', 'B11/0735/2025', 'elijah.getui@example.com', 'password555',6),
+    (34, 'Ethan Macharia', 'B11/0720/2025', 'ethan.macharia@example.com', 'password777', 6),
+    (35, 'Brighton Osaka', 'B011/0722/2025', 'brighton.osaka@example.com', 'password999', 6),
+    (36, 'Weddy Michubu', 'B11/10555/2025', 'weddy.michubu@example.com', 'password111', 6),
+    (37, 'Rosemary Adhola', 'B11/0732/2025', 'rosemary.adhola@example.com', 'password767',7),
+    (38, 'Muli Charles', 'B11/0690/20225', 'muli.charles@example.com', 'password444', 7),
+    (39, 'Jimmy Kihenjo', 'B11/07302025', 'Jimmy Kihenjo@example.com', 'password465', 7),
+    (40, 'Christian Namu', 'B11/0729/2025', 'christian.namu@example.com', 'password889', 7),
+    (41, 'Jared Osira', 'B11/0708/2025', 'jared.osira@example.com', 'password123', 7),
+    (42, 'Waweru Githundi', 'B11/0693/2025', 'Waweru.githundi', 'password998', 7),
+    (43, 'Joy Akinyi', 'B11/0721/2025', 'joy.akinyi@example.com', 'password783', 8),
+    (44, 'Brian Benedict','B11/11530/2025', 'brian.benedict@example.com', 'password664', 8),
+    (45, 'Cromwel Ndirangu', 'B11/21431/2025', 'cromwel.ndirangu@example.com', 'password123', 8),
+    (46, 'Naphtali Ogenga', 'B11/0727/2025', 'naphtali.ogenga@example.com', 'password456', 8),
+    (47, 'Obwewa Juma', 'B11/0724/2025', 'obwewa.juma@example.com', 'password788', 8),
+    (48, 'Fareed Kimaru', 'B11/20308/2025', 'fareed.kimaru@example.com', 'password223', 8),
+    (49, 'Anita Shama', 'B11/0718/2025', 'anita.shama@example.com', 'password458', 9),
+    (50, 'Raymond Chekenen', 'B11/20322/2025', 'raymond.chekenen@example.com', 'password789', 9),
+    (51, 'Thomas Micheal', 'B11EA/21134/2025', 'thomas.micheal@example.com', 'password123', 9),
+    (52, 'Nickel Sharma', 'B11S/20001/2025', 'nickel.sharma@example.com', 'password446', 9),
+    (53, 'Austyn Mwangi', 'B11/20514/2025', 'austyn.mwangi@example.com', 'password799', 9),
+    (54, 'Amos Aminga', 'B11/0717/2025', 'amos.aminga@example.com', 'password123', 9)
+]
