@@ -6,6 +6,7 @@ __pycache__/
 
 # Node (React)
 node_modules/
+.vscode/settings.json
 dist/
 
 # OS junk
