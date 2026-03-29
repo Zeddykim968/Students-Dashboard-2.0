@@ -11,20 +11,39 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
   const [token, setToken] = useState(localStorage.getItem('token'))
+  const [role, setRole] = useState(localStorage.getItem('role') || null)
+
+  useEffect(() => {
+    // Check if user data in localStorage
+    const savedUser = localStorage.getItem('user')
+    const savedRole = localStorage.getItem('role')
+    if (savedUser && savedRole) {
+      setUser(JSON.parse(savedUser))
+      setRole(savedRole)
+    }
+  }, [])
 
   const login = (userData, tokenData) => {
-    setUser(userData)
+    const userInfo = userData.user || userData // Adjust based on API response
+    setUser(userInfo)
     setToken(tokenData.access_token)
+    setRole(userInfo.role) // Assume API returns role in user
     localStorage.setItem('token', tokenData.access_token)
+    localStorage.setItem('user', JSON.stringify(userInfo))
+    localStorage.setItem('role', userInfo.role)
   }
 
   const logout = () => {
     setUser(null)
     setToken(null)
+    setRole(null)
     localStorage.removeItem('token')
+    localStorage.removeItem('user')
+    localStorage.removeItem('role')
   }
 
-  const value = { user, token, login, logout }
+  const value = { user, token, role, login, logout, isStudent: role === 'student', isLecturer: role === 'lecturer' }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
+
