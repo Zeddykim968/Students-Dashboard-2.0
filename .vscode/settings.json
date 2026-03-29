@@ -18,7 +18,8 @@
             "driver": "PostgreSQL",
             "name": "students-database",
             "database": "postgres",
-            "username": "Zeddy88"
+            "username": "postgres",
+            "password": "42110688@Zeddy"
         }
     ],
     "python-envs.defaultEnvManager": "ms-python.python:venv",
