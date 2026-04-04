@@ -12,11 +12,10 @@ class StudentBase(BaseModel):
     name: str
     reg_no: str
     email: EmailStr
-    password: str  # Will be hashed on create
     group_id: int
 
 class StudentCreate(StudentBase):
-    pass
+    password: str  # Plain text — will be hashed on create
 
 class StudentResponse(StudentBase):
     id: int

@@ -46,26 +46,16 @@ def get_group(db: Session, group_id: int) -> Optional[models.Group]:
     return group
 
 def get_group_by_student_email(db: Session, email: str) -> Optional[models.Group]:
-    """
-    Returns the Group instance for a given student's email.
-    Uses direct student.group relationship.
-    """
     student = db.query(models.Student).filter(models.Student.email == email).first()
     if not student:
         return None
-    if not student.group:
-        return None
+    return student.group or None
 
 def get_group_by_student_id(db: Session, student_id: int) -> Optional[models.Group]:
-    """
-    Returns the Group instance for a given student_id.
-    Uses direct student.group relationship.
-    """
     student = db.query(models.Student).filter(models.Student.id == student_id).first()
-    if  student is None:
+    if student is None:
         return None
-    if not student.group:
-        return None
+    return student.group or None
 
 def get_groups(db: Session, skip: int = 0, limit: int = 100) -> List[models.Group]:
     return db.query(models.Group).offset(skip).limit(limit).all()

@@ -14,12 +14,16 @@ const StudentDashboard = () => {
 
   useEffect(() => {
     fetchGroups()
-  }, [])
+  }, [user])
 
   const fetchGroups = async () => {
     try {
-      const data = await groupsAPI.getAll()
-      setGroups(data)
+      if (user?.group_id) {
+        const group = await groupsAPI.getById(user.group_id)
+        setGroups([group])
+      } else {
+        setGroups([])
+      }
     } catch (error) {
       toast.error('Failed to load groups')
     } finally {
