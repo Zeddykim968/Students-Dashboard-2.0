@@ -16,12 +16,21 @@
             "server": "localhost",
             "port": 5432,
             "driver": "PostgreSQL",
-            "name": "students-database",
+            "name": "Students_database",
             "database": "postgres",
             "username": "postgres",
             "password": "42110688@Zeddy"
         }
     ],
     "python-envs.defaultEnvManager": "ms-python.python:venv",
-    "python-envs.defaultPackageManager": "ms-python.python:pip"
+    "python-envs.defaultPackageManager": "ms-python.python:pip",
+    "python.testing.unittestArgs": [
+        "-v",
+        "-s",
+        "./backend",
+        "-p",
+        "*test.py"
+    ],
+    "python.testing.pytestEnabled": false,
+    "python.testing.unittestEnabled": true
 }

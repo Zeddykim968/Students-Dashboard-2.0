@@ -5,6 +5,7 @@ const apiCall = async (endpoint, options = {}) => {
   const url = `${API_BASE}${endpoint}`
   const config = {
     headers: {
+      "Content-Type": options.body instanceof FormData ? undefined : 'application/json',
       ...options.headers,
     },
     ...options,

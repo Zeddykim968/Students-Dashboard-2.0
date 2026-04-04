@@ -15,3 +15,7 @@ Thumbs.db
 
 # Logs
 *.log
+frontend/public/index.html
+students_database.sql
+students-database.session.sql
+backend/students_dashboard.db

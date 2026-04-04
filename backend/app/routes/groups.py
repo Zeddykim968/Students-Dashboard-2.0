@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 
 from ..db import get_db
 from .. import schemas, crud
-from utils.dependencies import get_current_user  # ✅ reuse, don't redefine
+from app.utils.dependencies import get_current_user  # ✅ reuse, don't redefine
 
 router = APIRouter()
 

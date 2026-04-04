@@ -3,7 +3,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 
-DATABASE_URL = "postgresql://postgress:42110688@localhost:5432/students-database"
+DATABASE_URL = "sqlite:///./students_dashboard.db"
 
 # Note: Update password/host if Zeddy != localhost
 
