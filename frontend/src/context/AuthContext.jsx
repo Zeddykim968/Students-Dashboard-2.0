@@ -23,14 +23,15 @@ export const AuthProvider = ({ children }) => {
     }
   }, [])
 
-  const login = (userData, tokenData) => {
-    const userInfo = userData.user || userData // Adjust based on API response
+  const login = (response) => {
+    const userInfo = response.user
+    const userRole = userInfo.role || 'student'
     setUser(userInfo)
-    setToken(tokenData.access_token)
-    setRole(userInfo.role) // Assume API returns role in user
-    localStorage.setItem('token', tokenData.access_token)
+    setToken(response.access_token)
+    setRole(userRole)
+    localStorage.setItem('token', response.access_token)
     localStorage.setItem('user', JSON.stringify(userInfo))
-    localStorage.setItem('role', userInfo.role)
+    localStorage.setItem('role', userRole)
   }
 
   const logout = () => {

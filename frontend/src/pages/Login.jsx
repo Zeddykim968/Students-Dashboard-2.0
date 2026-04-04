@@ -17,17 +17,14 @@ const Login = () => {
     setLoading(true)
     try {
       const response = await authAPI.login({ email, password })
-      login(response.user, response) // Assume response has user and access_token
+      login(response)
       toast.success('Login successful!')
-      
-      // Role-based redirect
-      const role = response.user.role || response.role
-      if (role === 'student') {
-        navigate('/student/dashboard')
-      } else if (role === 'lecturer') {
+
+      const role = response.user.role || 'student'
+      if (role === 'lecturer') {
         navigate('/lecturer/dashboard')
       } else {
-        navigate('/')
+        navigate('/student/dashboard')
       }
     } catch (error) {
       toast.error('Login failed: ' + error.message)

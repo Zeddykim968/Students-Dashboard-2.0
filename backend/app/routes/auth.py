@@ -27,7 +27,6 @@ async def login(login_data: LoginRequest, db: Session = Depends(get_db)) -> Dict
     if not student or not pwd_context.verify(login_data.password, student.password):
         raise HTTPException(status_code=401, detail="Invalid email or password")
 
-    # Create JWT token - use student.id (matches models)
     token = create_access_token({
         "student_id": student.id,
         "email": student.email
@@ -35,5 +34,13 @@ async def login(login_data: LoginRequest, db: Session = Depends(get_db)) -> Dict
 
     return {
         "access_token": token,
-        "token_type": "bearer"
+        "token_type": "bearer",
+        "user": {
+            "id": student.id,
+            "name": student.name,
+            "email": student.email,
+            "reg_no": student.reg_no,
+            "group_id": student.group_id,
+            "role": "student"
+        }
     }
