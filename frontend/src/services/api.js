@@ -1,5 +1,4 @@
-// API service for backend http://localhost:8000/api (CORS enabled)
-const API_BASE = 'http://localhost:8000/api'
+const API_BASE = '/api'
 
 const apiCall = async (endpoint, options = {}) => {
   const url = `${API_BASE}${endpoint}`
