@@ -2,25 +2,44 @@ const API_BASE = '/api'
 
 const getToken = () => localStorage.getItem('token')
 
+const clearAuth = () => {
+  localStorage.removeItem('token')
+  localStorage.removeItem('user')
+  localStorage.removeItem('role')
+  window.location.href = '/login'
+}
+
 const apiCall = async (endpoint, options = {}) => {
   const token = getToken()
   const isFormData = options.body instanceof FormData
   const url = `${API_BASE}${endpoint}`
-  const config = {
-    headers: {
-      ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...options.headers,
-    },
-    ...options,
+
+  const headers = {
+    ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    ...options.headers,
   }
+
+  const config = {
+    method: options.method || 'GET',
+    headers,
+    ...(options.body !== undefined ? { body: options.body } : {}),
+  }
+
   const response = await fetch(url, config)
+
+  if (response.status === 401) {
+    clearAuth()
+    throw new Error('Session expired. Please log in again.')
+  }
+
   if (!response.ok) {
     const text = await response.text()
     let msg = `API error: ${response.status}`
     try { msg = JSON.parse(text).detail || msg } catch {}
     throw new Error(msg)
   }
+
   const contentType = response.headers.get('content-type')
   if (contentType && contentType.includes('application/json')) return response.json()
   return response.blob()
