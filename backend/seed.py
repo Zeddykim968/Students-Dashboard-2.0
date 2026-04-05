@@ -112,12 +112,25 @@ for name, reg_no, email, plain_pw, group_num in students_data:
         reg_no=reg_no,
         email=email,
         password=hashed,
+        role="student",
         group_id=gid[group_num],
     )
     db.add(s)
+
+# ── Lecturer account ─────────────────────────────────────────────────────────
+lecturer = models.Student(
+    name="Lecturer",
+    reg_no="LECTURER/001",
+    email="lecturer@ku.ac.ke",
+    password=pwd_context.hash("lecturer123"),
+    role="lecturer",
+    group_id=None,
+)
+db.add(lecturer)
 
 db.commit()
 db.close()
 
 print(f"Done! Seeded {len(group_names)} groups and {len(students_data)} students.")
-print("\nSample login: 0703.2025@students.ku.ac.ke / password123")
+print("\nStudent login:  0703.2025@students.ku.ac.ke / password123")
+print("Lecturer login: lecturer@ku.ac.ke / lecturer123")

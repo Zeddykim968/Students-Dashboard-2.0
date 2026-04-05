@@ -41,6 +41,6 @@ async def login(login_data: LoginRequest, db: Session = Depends(get_db)) -> Dict
             "email": student.email,
             "reg_no": student.reg_no,
             "group_id": student.group_id,
-            "role": "student"
+            "role": student.role
         }
     }

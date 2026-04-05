@@ -11,7 +11,8 @@ class Student(Base):
     reg_no = Column(String, unique=True, index=True)  # Registration number
     email = Column(String, unique=True, index=True)
     password = Column(String, nullable=False)  # Hashed password (bcrypt)
-    group_id = Column(Integer, ForeignKey("groups.id"), nullable=False)
+    role = Column(String, default="student", nullable=False)
+    group_id = Column(Integer, ForeignKey("groups.id"), nullable=True)
 
     submissions = relationship("Submission", back_populates="student")
     messages = relationship("Message", back_populates="student")  # For chat
