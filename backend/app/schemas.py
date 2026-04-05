@@ -7,22 +7,37 @@ class TokenPayload(BaseModel):
     email: EmailStr | None = None
     exp: datetime
 
-# Student
-class StudentBase(BaseModel):
+class GradeSubmission(BaseModel):
+    grade: Optional[str] = None
+    lecturer_comment: Optional[str] = None
+
+# Lightweight student (no nested group/submissions to avoid circularity)
+class StudentBasic(BaseModel):
+    id: int
     name: str
     reg_no: str
     email: EmailStr
-    group_id: int
-
-class StudentCreate(StudentBase):
-    password: str  # Plain text — will be hashed on create
-
-class StudentResponse(StudentBase):
-    id: int
-    submissions: Optional[List['SubmissionResponse']] = []
-    group: Optional['GroupResponse'] = None
-
+    role: str = "student"
+    group_id: Optional[int] = None
     model_config = {"from_attributes": True}
+
+# Submission (uses StudentBasic to avoid circular refs)
+class SubmissionResponse(BaseModel):
+    id: int
+    student_id: int
+    group_id: int
+    file_url: str
+    file_name: Optional[str] = None
+    description: Optional[str] = None
+    grade: Optional[str] = None
+    lecturer_comment: Optional[str] = None
+    created_at: datetime
+    student: Optional[StudentBasic] = None
+    model_config = {"from_attributes": True}
+
+# Student with their submissions (no group to avoid recursion)
+class StudentResponse(StudentBasic):
+    submissions: Optional[List[SubmissionResponse]] = []
 
 # Group
 class GroupBase(BaseModel):
@@ -33,45 +48,39 @@ class GroupCreate(GroupBase):
 
 class GroupResponse(GroupBase):
     id: int
-    submissions: Optional[List['SubmissionResponse']] = []
-
+    students: Optional[List[StudentResponse]] = []
+    submissions: Optional[List[SubmissionResponse]] = []
     model_config = {"from_attributes": True}
 
-# Submission
-class SubmissionBase(BaseModel):
-    student_id: int
-    group_id: int
-    file_url: str
+class StudentCreate(BaseModel):
+    name: str
+    reg_no: str
+    email: EmailStr
+    password: str
+    group_id: Optional[int] = None
 
-class SubmissionCreate(SubmissionBase):
-    file_url: str
-
-class SubmissionResponse(SubmissionBase):
-    id: int
-    created_at: datetime
-    student: Optional['StudentResponse'] = None
-    group: Optional['GroupResponse'] = None
-    file_url: str
-
-    model_config = {"from_attributes": True}
-
-# Message for chat
-class MessageBase(BaseModel):
+# Message
+class MessageCreate(BaseModel):
     group_id: int
     student_id: int
     message: str
 
-class MessageCreate(MessageBase):
-    pass
-
-class MessageResponse(MessageBase):
+class MessageResponse(BaseModel):
     id: int
+    group_id: int
+    student_id: int
+    message: str
     created_at: datetime
     student_name: str
-
     model_config = {"from_attributes": True}
 
-StudentResponse.model_rebuild()
-GroupResponse.model_rebuild()
-SubmissionResponse.model_rebuild()
-MessageResponse.model_rebuild()
+# Assignment
+class AssignmentCreate(BaseModel):
+    title: str
+    description: Optional[str] = None
+    deadline: Optional[datetime] = None
+
+class AssignmentResponse(AssignmentCreate):
+    id: int
+    created_at: datetime
+    model_config = {"from_attributes": True}

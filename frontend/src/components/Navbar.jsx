@@ -1,28 +1,22 @@
 import { useAuth } from '../context/AuthContext'
 
 const Navbar = () => {
-  const { user, logout } = useAuth()
+  const { user, role } = useAuth()
 
   return (
-    <nav className="bg-white shadow-lg border-b border-gray-200 px-6 py-4">
+    <nav className="bg-white border-b border-gray-200 px-6 py-3">
       <div className="flex items-center justify-between">
-        <div className="text-xl font-bold text-gray-800">
-          Students Dashboard
-        </div>
-        <div className="flex items-center space-x-4">
-          <span className="text-sm text-gray-600">
-            {user ? `Hi, ${user.name || user.email}` : 'Guest'}
-          </span>
-          {user ? (
-            <button
-              onClick={logout}
-              className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
-            >
-              Logout
-            </button>
-          ) : (
-            <span className="text-gray-500">Login</span>
-          )}
+        <h1 className="text-base font-semibold text-gray-800">
+          Architecture Group Assignment System
+        </h1>
+        <div className="flex items-center gap-3">
+          <div className="text-right">
+            <p className="text-sm font-medium text-gray-800">{user?.name || 'Guest'}</p>
+            <p className="text-xs text-gray-400 capitalize">{role || ''}</p>
+          </div>
+          <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-xs font-bold">
+            {user?.name?.charAt(0) || '?'}
+          </div>
         </div>
       </div>
     </nav>

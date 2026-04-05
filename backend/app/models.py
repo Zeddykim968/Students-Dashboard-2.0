@@ -8,15 +8,15 @@ class Student(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True)
-    reg_no = Column(String, unique=True, index=True)  # Registration number
+    reg_no = Column(String, unique=True, index=True)
     email = Column(String, unique=True, index=True)
-    password = Column(String, nullable=False)  # Hashed password (bcrypt)
+    password = Column(String, nullable=False)
     role = Column(String, default="student", nullable=False)
     group_id = Column(Integer, ForeignKey("groups.id"), nullable=True)
 
     submissions = relationship("Submission", back_populates="student")
-    messages = relationship("Message", back_populates="student")  # For chat
-    group = relationship("Group", back_populates="students")  # Direct group link
+    messages = relationship("Message", back_populates="student")
+    group = relationship("Group", back_populates="students")
 
 class Group(Base):
     __tablename__ = "groups"
@@ -25,8 +25,8 @@ class Group(Base):
     name = Column(String, index=True)
 
     submissions = relationship("Submission", back_populates="group")
-    students = relationship("Student", back_populates="group")  # Students in group
-    messages = relationship("Message", back_populates="group", order_by="Message.created_at")  # Chat messages
+    students = relationship("Student", back_populates="group")
+    messages = relationship("Message", back_populates="group", order_by="Message.created_at")
 
 class Submission(Base):
     __tablename__ = "submissions"
@@ -35,22 +35,32 @@ class Submission(Base):
     student_id = Column(Integer, ForeignKey("students.id"))
     group_id = Column(Integer, ForeignKey("groups.id"))
     file_url = Column(String)
+    file_name = Column(String)
+    description = Column(Text, nullable=True)
+    grade = Column(String, nullable=True)
+    lecturer_comment = Column(Text, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     student = relationship("Student", back_populates="submissions")
     group = relationship("Group", back_populates="submissions")
 
-# Chat Messages
 class Message(Base):
     __tablename__ = "messages"
-    
+
     id = Column(Integer, primary_key=True, index=True)
     group_id = Column(Integer, ForeignKey("groups.id"), nullable=False)
     student_id = Column(Integer, ForeignKey("students.id"), nullable=False)
     message = Column(Text, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
-    
+
     group = relationship("Group", back_populates="messages")
     student = relationship("Student", back_populates="messages")
 
-# Run create_all to create messages table
+class Assignment(Base):
+    __tablename__ = "assignments"
+
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String, nullable=False)
+    description = Column(Text, nullable=True)
+    deadline = Column(DateTime(timezone=True), nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
