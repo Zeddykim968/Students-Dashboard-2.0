@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: student-group-backend
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: student-group-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ALLOWED_ORIGINS
+        value: https://your-vercel-app.vercel.app
+
+databases:
+  - name: student-group-db
+    databaseName: student_group_db
+    user: student_group_user
+    plan: free
