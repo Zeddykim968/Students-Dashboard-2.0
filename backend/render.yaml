@@ -12,7 +12,7 @@ services:
       - key: SECRET_KEY
         generateValue: true
       - key: ALLOWED_ORIGINS
-        value: https://your-vercel-app.vercel.app
+        value: https://assignments-upload-sable.vercel.app
 
 databases:
   - name: student-group-db
