@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Text
+from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Text, Boolean
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from .db import Base
@@ -13,6 +13,9 @@ class Student(Base):
     password = Column(String, nullable=False)
     role = Column(String, default="student", nullable=False)
     group_id = Column(Integer, ForeignKey("groups.id"), nullable=True)
+    must_change_password = Column(Boolean, default=True, nullable=False)
+    reset_token = Column(String, nullable=True)
+    reset_token_expiry = Column(DateTime(timezone=True), nullable=True)
 
     submissions = relationship("Submission", back_populates="student")
     messages = relationship("Message", back_populates="student")
