@@ -1,7 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
 from contextlib import asynccontextmanager
 from sqlalchemy import text
 import os
@@ -27,10 +26,35 @@ def _run_migrations():
         conn.commit()
 
 
+def _ensure_lecturer_exists():
+    """Create the lecturer account if it doesn't exist yet."""
+    from passlib.context import CryptContext
+    from .models import Student
+    pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+    db = SessionLocal()
+    try:
+        lecturer = db.query(Student).filter(Student.role == "lecturer").first()
+        if not lecturer:
+            lecturer = Student(
+                name="Lecturer",
+                reg_no="LECTURER/001",
+                email="lecturer@ku.ac.ke",
+                password=pwd_context.hash("Lecturer2025"),
+                role="lecturer",
+                group_id=None,
+                must_change_password=False,
+            )
+            db.add(lecturer)
+            db.commit()
+    finally:
+        db.close()
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     Base.metadata.create_all(bind=engine)
     _run_migrations()
+    _ensure_lecturer_exists()
     os.makedirs("uploads/submissions", exist_ok=True)
     yield
 
@@ -53,17 +77,6 @@ app.include_router(assignments.router, prefix="/api")
 
 app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
-# Serve React frontend in production
-FRONTEND_DIST = os.path.join(os.path.dirname(__file__), "../../frontend/dist")
-
-if os.path.exists(FRONTEND_DIST):
-    app.mount("/assets", StaticFiles(directory=os.path.join(FRONTEND_DIST, "assets")), name="assets")
-
-    @app.get("/{full_path:path}")
-    def serve_frontend(full_path: str):
-        index = os.path.join(FRONTEND_DIST, "index.html")
-        return FileResponse(index)
-else:
-    @app.get("/")
-    def root():
-        return {"message": "Student Group Assignment System API"}
+@app.get("/")
+def root():
+    return {"message": "Student Group Assignment System API"}
