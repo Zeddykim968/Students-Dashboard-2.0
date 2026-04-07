@@ -3,6 +3,9 @@ import { AuthProvider, useAuth } from './context/AuthContext'
 import Navbar from './components/Navbar'
 import Sidebar from './components/Sidebar'
 import Login from './pages/Login'
+import ForgotPassword from './pages/ForgotPassword'
+import ResetPassword from './pages/ResetPassword'
+import ChangePassword from './pages/ChangePassword'
 import StudentDashboard from './pages/StudentDashboard'
 import LecturerDashboard from './pages/LecturerDashboard'
 import GroupPage from './pages/GroupPage'
@@ -13,6 +16,12 @@ import { Toaster } from 'react-hot-toast'
 import './index.css'
 
 const DashboardLayout = () => {
+  const { user } = useAuth()
+
+  if (user?.must_change_password) {
+    return <Navigate to="/change-password" replace />
+  }
+
   return (
     <div className="flex h-screen bg-gray-50">
       <Sidebar />
@@ -40,6 +49,13 @@ const AppContent = () => {
     <Router>
       <Routes>
         <Route path="/login" element={<Login />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/change-password" element={
+          <ProtectedRoute>
+            <ChangePassword />
+          </ProtectedRoute>
+        } />
         <Route
           path="/"
           element={
