@@ -1,19 +1,19 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from ..db import get_db
-from ..crud import get_student_by_email
+from ..crud import get_student_by_email, change_password, create_reset_token, reset_password_with_token
 from passlib.context import CryptContext
 from ..utils.auth import create_access_token
+from ..utils.email import send_password_reset_email
+from ..utils.dependencies import get_current_user
 from app.models import Student
+from app import schemas
 from typing import Dict, Any
-
-
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
- # Authenticate student by email/password using bcrypt
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 class LoginRequest(BaseModel):
@@ -41,6 +41,40 @@ async def login(login_data: LoginRequest, db: Session = Depends(get_db)) -> Dict
             "email": student.email,
             "reg_no": student.reg_no,
             "group_id": student.group_id,
-            "role": student.role
+            "role": student.role,
+            "must_change_password": student.must_change_password,
         }
     }
+
+@router.post("/change-password")
+async def change_user_password(
+    data: schemas.ChangePasswordRequest,
+    db: Session = Depends(get_db),
+    current_user: schemas.TokenPayload = Depends(get_current_user)
+):
+    student = change_password(db, current_user.student_id, data.current_password, data.new_password)
+    return {
+        "message": "Password changed successfully",
+        "must_change_password": student.must_change_password
+    }
+
+@router.post("/forgot-password")
+async def forgot_password(
+    data: schemas.ForgotPasswordRequest,
+    request: Request,
+    db: Session = Depends(get_db)
+):
+    token = create_reset_token(db, data.email)
+    if token:
+        student = get_student_by_email(db, data.email)
+        origin = request.headers.get("origin") or str(request.base_url).rstrip("/")
+        send_password_reset_email(data.email, student.name, token, origin)
+    return {"message": "If that email exists in our system, a reset link has been sent."}
+
+@router.post("/reset-password")
+async def reset_password(
+    data: schemas.ResetPasswordRequest,
+    db: Session = Depends(get_db)
+):
+    reset_password_with_token(db, data.token, data.new_password)
+    return {"message": "Password reset successfully. You can now log in."}
