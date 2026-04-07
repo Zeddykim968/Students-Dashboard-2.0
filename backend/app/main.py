@@ -15,6 +15,11 @@ def _seed_if_empty():
     db = SessionLocal()
     try:
         if db.query(models.Student).count() > 0:
+            lecturer = db.query(models.Student).filter(models.Student.email == "lecturer@ku.ac.ke").first()
+            if lecturer and lecturer.name != "Dr. Wairimu":
+                lecturer.name = "Dr. Wairimu"
+                db.commit()
+                print("Lecturer name updated to Dr. Wairimu.")
             return
 
         pwd = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -97,7 +102,7 @@ def _seed_if_empty():
             ))
 
         db.add(models.Student(
-            name="Lecturer", reg_no="LECTURER/001", email="lecturer@ku.ac.ke",
+            name="Dr. Wairimu", reg_no="LECTURER/001", email="lecturer@ku.ac.ke",
             password=pwd.hash("lecturer123"), role="lecturer", group_id=None,
         ))
 

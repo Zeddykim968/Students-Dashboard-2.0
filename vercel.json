@@ -7,6 +7,10 @@
       "source": "/api/:path*",
       "destination": "https://student-uploads-api.onrender.com/api/:path*"
     },
+    {
+      "source": "/uploads/:path*",
+      "destination": "https://student-uploads-api.onrender.com/uploads/:path*"
+    },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
