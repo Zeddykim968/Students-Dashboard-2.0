@@ -29,8 +29,16 @@ const apiCall = async (endpoint, options = {}) => {
   const response = await fetch(url, config)
 
   if (response.status === 401) {
-    clearAuth()
-    throw new Error('Session expired. Please log in again.')
+    // Only auto-logout if the user already had a session token.
+    // If there's no token, this is a failed login — just throw the error.
+    if (token) {
+      clearAuth()
+      throw new Error('Session expired. Please log in again.')
+    }
+    const text = await response.text()
+    let msg = 'Invalid email or password'
+    try { msg = JSON.parse(text).detail || msg } catch {}
+    throw new Error(msg)
   }
 
   if (!response.ok) {
@@ -47,11 +55,15 @@ const apiCall = async (endpoint, options = {}) => {
 
 export const authAPI = {
   login: (data) => apiCall('/auth/login', { method: 'POST', body: JSON.stringify(data) }),
+  changePassword: (data) => apiCall('/auth/change-password', { method: 'POST', body: JSON.stringify(data) }),
+  forgotPassword: (data) => apiCall('/auth/forgot-password', { method: 'POST', body: JSON.stringify(data) }),
+  resetPassword: (data) => apiCall('/auth/reset-password', { method: 'POST', body: JSON.stringify(data) }),
 }
 
 export const studentsAPI = {
   getAll: () => apiCall('/students'),
   create: (data) => apiCall('/students', { method: 'POST', body: JSON.stringify(data) }),
+  emailStudents: (data) => apiCall('/students/email', { method: 'POST', body: JSON.stringify(data) }),
 }
 
 export const groupsAPI = {
