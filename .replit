@@ -59,5 +59,10 @@ externalPort = 8000
 
 [deployment]
 deploymentTarget = "autoscale"
-run = ["bash", "-c", "cd backend && python -m uvicorn app.main:app --host 0.0.0.0 --port 8000"]
-build = ["bash", "-c", "cd frontend && npm install --legacy-peer-deps && npm run build"]
+run = ["bash", "-c", "cd backend && gunicorn --bind 0.0.0.0:8000 --reuse-port --workers 2 app.main:app -k uvicorn.workers.UvicornWorker"]
+build = ["bash", "-c", "pip install -r backend/requirements.txt && cd frontend && npm install --legacy-peer-deps && npm run build"]
+
+[userenv]
+
+[userenv.shared]
+SECRET_KEY = "f91a46a8d582acd498f5730f0d679bd65a3024489d3b0b24282984fb7bc99673"

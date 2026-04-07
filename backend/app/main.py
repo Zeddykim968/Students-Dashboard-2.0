@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from contextlib import asynccontextmanager
 from sqlalchemy import text
 import os
@@ -15,7 +16,6 @@ def _run_migrations():
         "ALTER TABLE students ADD COLUMN IF NOT EXISTS must_change_password BOOLEAN DEFAULT TRUE",
         "ALTER TABLE students ADD COLUMN IF NOT EXISTS reset_token VARCHAR",
         "ALTER TABLE students ADD COLUMN IF NOT EXISTS reset_token_expiry TIMESTAMPTZ",
-        # Lecturer should never be forced to change password
         "UPDATE students SET must_change_password = FALSE WHERE role = 'lecturer'",
     ]
     with engine.connect() as conn:
@@ -37,11 +37,6 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="Student Group Assignment System API", lifespan=lifespan)
 
-ALLOWED_ORIGINS = os.getenv(
-    "ALLOWED_ORIGINS",
-    "http://localhost:5000,http://localhost:3000,http://127.0.0.1:5000"
-).split(",")
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -58,6 +53,17 @@ app.include_router(assignments.router, prefix="/api")
 
 app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
-@app.get("/")
-def root():
-    return {"message": "Student Group Assignment System API"}
+# Serve React frontend in production
+FRONTEND_DIST = os.path.join(os.path.dirname(__file__), "../../frontend/dist")
+
+if os.path.exists(FRONTEND_DIST):
+    app.mount("/assets", StaticFiles(directory=os.path.join(FRONTEND_DIST, "assets")), name="assets")
+
+    @app.get("/{full_path:path}")
+    def serve_frontend(full_path: str):
+        index = os.path.join(FRONTEND_DIST, "index.html")
+        return FileResponse(index)
+else:
+    @app.get("/")
+    def root():
+        return {"message": "Student Group Assignment System API"}
