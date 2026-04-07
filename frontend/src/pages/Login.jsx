@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { authAPI } from '../services/api'
 import { useAuth } from '../context/AuthContext'
 import { toast } from 'react-hot-toast'
@@ -21,13 +21,15 @@ const Login = () => {
       toast.success('Login successful!')
 
       const role = response.user.role || 'student'
-      if (role === 'lecturer') {
+      if (response.user.must_change_password) {
+        navigate('/change-password')
+      } else if (role === 'lecturer') {
         navigate('/lecturer/dashboard')
       } else {
         navigate('/student/dashboard')
       }
     } catch (error) {
-      toast.error('Login failed: ' + error.message)
+      toast.error(error.message || 'Login failed')
     } finally {
       setLoading(false)
     }
@@ -39,8 +41,14 @@ const Login = () => {
         <div className="text-center">
           <LogIn className="mx-auto h-16 w-16 text-blue-500" />
           <h1 className="text-3xl font-bold text-gray-900 mt-4">Welcome Back</h1>
-          <p className="text-gray-600">Sign in to your account</p>
+          <p className="text-gray-600">Architecture Design Studio — KU</p>
         </div>
+
+        <div className="bg-blue-50 border border-blue-200 rounded-xl p-3 text-sm text-blue-700">
+          <strong>First time?</strong> Use the uniform password: <code className="bg-blue-100 px-1 rounded font-mono">Arch@2025</code>
+          <br />You'll be prompted to set your own password after logging in.
+        </div>
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
@@ -70,6 +78,11 @@ const Login = () => {
               required
             />
           </div>
+          <div className="text-right">
+            <Link to="/forgot-password" className="text-sm text-blue-600 hover:text-blue-800 hover:underline">
+              Forgot your password?
+            </Link>
+          </div>
           <button
             type="submit"
             disabled={loading}
@@ -84,4 +97,3 @@ const Login = () => {
 }
 
 export default Login
-
