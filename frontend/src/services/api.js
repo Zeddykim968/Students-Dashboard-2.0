@@ -54,7 +54,21 @@ const apiCall = async (endpoint, options = {}) => {
 }
 
 export const authAPI = {
-  login: (data) => apiCall('/auth/login', { method: 'POST', body: JSON.stringify(data) }),
+  login: async (data) => {
+    // Never send an existing token for login — avoids false "session expired" errors
+    const response = await fetch(`${API_BASE}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    })
+    const text = await response.text()
+    let json
+    try { json = JSON.parse(text) } catch {}
+    if (!response.ok) {
+      throw new Error((json && json.detail) || 'Invalid email or password')
+    }
+    return json
+  },
   changePassword: (data) => apiCall('/auth/change-password', { method: 'POST', body: JSON.stringify(data) }),
   forgotPassword: (data) => apiCall('/auth/forgot-password', { method: 'POST', body: JSON.stringify(data) }),
   resetPassword: (data) => apiCall('/auth/reset-password', { method: 'POST', body: JSON.stringify(data) }),
