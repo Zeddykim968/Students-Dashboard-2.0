@@ -22,16 +22,7 @@ class LoginRequest(BaseModel):
 
 @router.post("/login")
 async def login(login_data: LoginRequest, db: Session = Depends(get_db)) -> Dict[str, Any]:
-    import logging
-    logger = logging.getLogger("uvicorn.error")
-    logger.info(f"LOGIN ATTEMPT: email={repr(login_data.email)} password_len={len(login_data.password)}")
-
     student: Student | None = get_student_by_email(db, login_data.email)
-    if student:
-        match = pwd_context.verify(login_data.password, student.password)
-        logger.info(f"LOGIN CHECK: found={True} password_match={match}")
-    else:
-        logger.info(f"LOGIN CHECK: found={False}")
 
     if not student or not pwd_context.verify(login_data.password, student.password):
         raise HTTPException(status_code=401, detail="Invalid email or password")
