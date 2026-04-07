@@ -11,7 +11,6 @@ class GradeSubmission(BaseModel):
     grade: Optional[str] = None
     lecturer_comment: Optional[str] = None
 
-# Lightweight student (no nested group/submissions to avoid circularity)
 class StudentBasic(BaseModel):
     id: int
     name: str
@@ -19,9 +18,9 @@ class StudentBasic(BaseModel):
     email: EmailStr
     role: str = "student"
     group_id: Optional[int] = None
+    must_change_password: bool = False
     model_config = {"from_attributes": True}
 
-# Submission (uses StudentBasic to avoid circular refs)
 class SubmissionResponse(BaseModel):
     id: int
     student_id: int
@@ -35,11 +34,9 @@ class SubmissionResponse(BaseModel):
     student: Optional[StudentBasic] = None
     model_config = {"from_attributes": True}
 
-# Student with their submissions (no group to avoid recursion)
 class StudentResponse(StudentBasic):
     submissions: Optional[List[SubmissionResponse]] = []
 
-# Group
 class GroupBase(BaseModel):
     name: str
 
@@ -59,7 +56,6 @@ class StudentCreate(BaseModel):
     password: str
     group_id: Optional[int] = None
 
-# Message
 class MessageCreate(BaseModel):
     group_id: int
     student_id: int
@@ -74,7 +70,6 @@ class MessageResponse(BaseModel):
     student_name: str
     model_config = {"from_attributes": True}
 
-# Assignment
 class AssignmentCreate(BaseModel):
     title: str
     description: Optional[str] = None
@@ -84,3 +79,19 @@ class AssignmentResponse(AssignmentCreate):
     id: int
     created_at: datetime
     model_config = {"from_attributes": True}
+
+class ChangePasswordRequest(BaseModel):
+    current_password: str
+    new_password: str
+
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr
+
+class ResetPasswordRequest(BaseModel):
+    token: str
+    new_password: str
+
+class EmailStudentsRequest(BaseModel):
+    subject: str
+    body: str
+    student_ids: Optional[List[int]] = None
