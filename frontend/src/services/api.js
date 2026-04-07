@@ -65,7 +65,7 @@ export const authAPI = {
     let json
     try { json = JSON.parse(text) } catch {}
     if (!response.ok) {
-      throw new Error((json && json.detail) || 'Invalid email or password')
+      throw new Error((json && json.detail) || `Login failed (${response.status})`)
     }
     return json
   },
