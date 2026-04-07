@@ -50,6 +50,14 @@ const Login = () => {
           <br />You'll be prompted to set your own password after logging in.
         </div>
 
+        <button
+          type="button"
+          onClick={() => { setEmail('lecturer@ku.ac.ke'); setPassword('Lecturer2025') }}
+          className="w-full border border-blue-300 text-blue-700 bg-blue-50 hover:bg-blue-100 py-2 px-4 rounded-xl text-sm font-medium transition-all"
+        >
+          Fill Lecturer Credentials
+        </button>
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
