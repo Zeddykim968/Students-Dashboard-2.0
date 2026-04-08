@@ -132,17 +132,21 @@ def _auto_seed():
             )
             db.add(s)
 
-        lecturer = Student(
-            name="Lecturer",
-            reg_no="LECTURER/001",
-            email="lecturer@ku.ac.ke",
-            password=pwd_context.hash("Lecturer2025"),
-            role="lecturer",
-            group_id=None,
-            must_change_password=False,
-        )
-        db.add(lecturer)
         db.commit()
+
+        existing_lecturer = db.query(Student).filter(Student.email == "lecturer@ku.ac.ke").first()
+        if not existing_lecturer:
+            lecturer = Student(
+                name="Lecturer",
+                reg_no="LECTURER/001",
+                email="lecturer@ku.ac.ke",
+                password=pwd_context.hash("Lecturer2025"),
+                role="lecturer",
+                group_id=None,
+                must_change_password=False,
+            )
+            db.add(lecturer)
+            db.commit()
 
     finally:
         db.close()

@@ -12,7 +12,7 @@ const ChangePassword = () => {
   const [showCurrent, setShowCurrent] = useState(false)
   const [showNew, setShowNew] = useState(false)
   const [loading, setLoading] = useState(false)
-  const { user, role, login } = useAuth()
+  const { user, role, updateUser } = useAuth()
   const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
@@ -30,9 +30,7 @@ const ChangePassword = () => {
       await authAPI.changePassword({ current_password: currentPassword, new_password: newPassword })
       toast.success('Password changed successfully!')
 
-      const stored = JSON.parse(localStorage.getItem('user') || '{}')
-      stored.must_change_password = false
-      localStorage.setItem('user', JSON.stringify(stored))
+      updateUser({ must_change_password: false })
 
       if (role === 'lecturer') {
         navigate('/lecturer/dashboard')
