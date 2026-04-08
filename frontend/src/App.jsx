@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import Navbar from './components/Navbar'
@@ -17,6 +18,7 @@ import './index.css'
 
 const DashboardLayout = () => {
   const { user } = useAuth()
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
 
   if (user?.must_change_password) {
     return <Navigate to="/change-password" replace />
@@ -24,8 +26,8 @@ const DashboardLayout = () => {
 
   return (
     <div className="flex h-screen bg-gray-50">
-      <Sidebar />
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <Sidebar collapsed={sidebarCollapsed} onToggle={() => setSidebarCollapsed(prev => !prev)} />
+      <div className="flex-1 flex flex-col overflow-hidden min-w-0">
         <Navbar />
         <main className="flex-1 overflow-x-hidden overflow-y-auto p-6">
           <Routes>
