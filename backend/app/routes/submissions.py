@@ -5,6 +5,7 @@ from ..db import get_db
 from .. import schemas, crud
 from app.utils.dependencies import get_current_user
 import os, time, re
+from io import BytesIO
 import cloudinary
 import cloudinary.uploader
 
@@ -61,12 +62,14 @@ async def create_submission(
         raise HTTPException(status_code=400, detail=f"File type '{ext}' is not supported")
 
     file_bytes = await file.read()
+    if not file_bytes:
+        raise HTTPException(status_code=400, detail="Uploaded file is empty")
 
     if _cloudinary_configured():
         _configure_cloudinary()
         public_id = f"submissions/{student_id}_{int(time.time())}_{safe_filename(file.filename)}"
         result = cloudinary.uploader.upload(
-            file_bytes,
+            BytesIO(file_bytes),
             public_id=public_id,
             resource_type="auto",
             use_filename=True,

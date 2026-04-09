@@ -78,6 +78,7 @@ export const studentsAPI = {
   getAll: () => apiCall('/students'),
   create: (data) => apiCall('/students', { method: 'POST', body: JSON.stringify(data) }),
   emailStudents: (data) => apiCall('/students/email', { method: 'POST', body: JSON.stringify(data) }),
+  resetPassword: (studentId) => apiCall(`/students/${studentId}/reset-password`, { method: 'POST' }),
 }
 
 export const groupsAPI = {

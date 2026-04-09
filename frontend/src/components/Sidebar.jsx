@@ -1,6 +1,6 @@
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { LayoutDashboard, Users, BookOpen, FileText, LogOut, GraduationCap, ChevronLeft, ChevronRight } from 'lucide-react'
+import { LayoutDashboard, Users, BookOpen, FileText, LogOut, GraduationCap, ChevronLeft, ChevronRight, KeyRound } from 'lucide-react'
 
 const Sidebar = ({ collapsed, onToggle }) => {
   const { role, logout } = useAuth()
@@ -10,11 +10,13 @@ const Sidebar = ({ collapsed, onToggle }) => {
     { to: '/student/dashboard', label: 'My Group', icon: LayoutDashboard },
     { to: '/student/submissions', label: 'My Submissions', icon: FileText },
     { to: '/assignments', label: 'Assignments', icon: BookOpen },
+    { to: '/change-password', label: 'Change Password', icon: KeyRound },
   ]
 
   const lecturerLinks = [
     { to: '/lecturer/dashboard', label: 'All Groups', icon: Users },
     { to: '/lecturer/assignments', label: 'Assignments', icon: BookOpen },
+    { to: '/change-password', label: 'Change Password', icon: KeyRound },
   ]
 
   const links = role === 'lecturer' ? lecturerLinks : studentLinks

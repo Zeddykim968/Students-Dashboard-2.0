@@ -19,6 +19,19 @@ def read_students(db: Session = Depends(get_db)):
 def read_student(student_id: int, db: Session = Depends(get_db)):
     return crud.get_student(db, student_id)
 
+@router.post("/students/{student_id}/reset-password")
+def reset_student_password(
+    student_id: int,
+    db: Session = Depends(get_db),
+    current_user: schemas.TokenPayload = Depends(get_current_user)
+):
+    lecturer = crud.get_student(db, current_user.student_id)
+    if lecturer.role != "lecturer":
+        raise HTTPException(status_code=403, detail="Only lecturers can reset passwords")
+    crud.reset_student_password(db, student_id)
+    student = crud.get_student(db, student_id)
+    return {"message": f"Password reset to Arch@2025 for {student.name}. They must change it on next login."}
+
 @router.post("/students/email")
 def email_students(
     data: schemas.EmailStudentsRequest,
