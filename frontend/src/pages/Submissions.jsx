@@ -57,24 +57,25 @@ const MySubmissions = () => {
     finally { setLoading(false) }
   }
 
-  const fetchMyGroup = async () => {
-    try {
-      const grp = await groupsAPI.getMyGroup()
-      if (grp?.id) {
-        setGroupId(grp.id)
-        updateUser({ group_id: grp.id })
-      }
-    } catch {}
-  }
-
   useEffect(() => {
-    fetchSubmissions()
-    if (!user?.group_id) {
-      fetchMyGroup()
-    } else {
-      setGroupId(user.group_id)
+    const init = async () => {
+      let gid = user?.group_id
+      if (!gid && user?.id) {
+        try {
+          const grp = await groupsAPI.getMyGroup()
+          if (grp?.id) {
+            gid = grp.id
+            setGroupId(grp.id)
+            updateUser({ group_id: grp.id })
+          }
+        } catch {}
+      } else if (gid) {
+        setGroupId(gid)
+      }
+      fetchSubmissions()
     }
-  }, [user])
+    init()
+  }, [user?.id])
 
   const onDrop = useCallback(async (files) => {
     const file = files[0]

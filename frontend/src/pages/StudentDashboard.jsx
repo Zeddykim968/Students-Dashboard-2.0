@@ -6,7 +6,7 @@ import { Users, BookOpen, Calendar, ChevronRight, Clock } from 'lucide-react'
 import { toast } from 'react-hot-toast'
 
 const StudentDashboard = () => {
-  const { user } = useAuth()
+  const { user, updateUser } = useAuth()
   const navigate = useNavigate()
   const [group, setGroup] = useState(null)
   const [assignments, setAssignments] = useState([])
@@ -15,8 +15,18 @@ const StudentDashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        let groupId = user?.group_id
+        if (!groupId && user?.id) {
+          try {
+            const myGrp = await groupsAPI.getMyGroup()
+            if (myGrp?.id) {
+              groupId = myGrp.id
+              updateUser({ group_id: myGrp.id })
+            }
+          } catch {}
+        }
         const [grp, asns] = await Promise.all([
-          user?.group_id ? groupsAPI.getById(user.group_id) : Promise.resolve(null),
+          groupId ? groupsAPI.getById(groupId) : Promise.resolve(null),
           assignmentsAPI.getAll()
         ])
         setGroup(grp)
@@ -25,7 +35,7 @@ const StudentDashboard = () => {
       finally { setLoading(false) }
     }
     fetchData()
-  }, [user])
+  }, [user?.id])
 
   if (loading) return (
     <div className="flex items-center justify-center h-64">
