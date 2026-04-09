@@ -163,9 +163,13 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="Student Group Assignment System API", lifespan=lifespan)
 
+_raw_origins = os.getenv("ALLOWED_ORIGINS", "")
+_extra_origins = [o.strip() for o in _raw_origins.split(",") if o.strip()]
+_allow_origins = _extra_origins if _extra_origins else ["*"]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=_allow_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
