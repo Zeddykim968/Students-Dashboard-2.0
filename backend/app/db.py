@@ -1,3 +1,6 @@
+# This file sets up the database connection using SQLAlchemy. 
+# It constructs the database URL based on environment variables, allowing for flexible configuration across different environments (Replit's built-in PostgreSQL, Supabase, or local SQLite). 
+# It also defines a function to get a database session for use in API routes.
 import os
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
@@ -22,6 +25,7 @@ def _build_url():
         url = url.replace("postgres://", "postgresql://", 1)
     return url
 
+# Construct the database URL based on environment variables, allowing for flexible configuration across different environments (Replit's built-in PostgreSQL, Supabase, or local SQLite).
 DATABASE_URL = _build_url()
 
 connect_args = {}

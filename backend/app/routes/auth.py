@@ -1,3 +1,6 @@
+# Authentication routes for the Student Group Assignment System.
+# This module defines API endpoints for user authentication, including login, password change, and password reset functionality. It uses JWT tokens for authentication and includes security measures such as password hashing and token-based password resets. The routes are organized under the "/auth" prefix and include appropriate error handling and response structures.
+
 from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
@@ -13,7 +16,7 @@ from app import schemas
 from typing import Dict, Any
 
 router = APIRouter(prefix="/auth", tags=["auth"])
-
+# The LoginRequest model defines the expected structure of the login request body, which includes an email and a password.
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 class LoginRequest(BaseModel):
@@ -46,6 +49,7 @@ async def login(login_data: LoginRequest, db: Session = Depends(get_db)) -> Dict
         }
     }
 
+# The change_user_password endpoint allows authenticated users to change their password by providing the current password and a new password. It verifies the current password and updates it if valid.
 @router.post("/change-password")
 async def change_user_password(
     data: schemas.ChangePasswordRequest,
@@ -58,6 +62,7 @@ async def change_user_password(
         "must_change_password": student.must_change_password
     }
 
+# The forgot_password endpoint allows users to request a password reset by providing their email. If the email exists, a reset token is generated and an email is sent with instructions to reset the password. The reset_password endpoint allows users to reset their password using the token they received via email, along with the new password they want to set. It verifies the token and updates the password if valid.
 @router.post("/forgot-password")
 async def forgot_password(
     data: schemas.ForgotPasswordRequest,

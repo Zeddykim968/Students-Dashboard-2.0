@@ -1,3 +1,7 @@
+# CRUD operations for the Student Group Assignment System.
+# This module defines functions to interact with the database for students, groups, submissions, messages, and assignments. 
+# It includes operations for creating, retrieving, updating, and deleting records, as well as handling password management and authentication-related tasks.
+
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
 from . import models, schemas
@@ -9,6 +13,7 @@ import secrets
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 # Student
+# The student-related functions include operations for retrieving students by ID or email, listing students, creating new students with hashed passwords, changing passwords, and handling password reset tokens.
 def get_student(db: Session, student_id: int) -> models.Student:
     student = db.query(models.Student).filter(models.Student.id == student_id).first()
     if student is None:
@@ -82,6 +87,7 @@ def reset_password_with_token(db: Session, token: str, new_password: str) -> mod
     return student
 
 # Group
+# The group-related functions allow for retrieving groups by ID or by student email/ID, listing groups, and creating new groups.
 def get_group(db: Session, group_id: int) -> Optional[models.Group]:
     group = db.query(models.Group).filter(models.Group.id == group_id).first()
     if group is None:
@@ -111,6 +117,7 @@ def create_group(db: Session, group: schemas.GroupCreate) -> models.Group:
     return db_group
 
 # Submissions
+# The submission-related functions include operations for retrieving submissions by student or group, creating new submissions, grading submissions, and deleting submissions.
 def get_submissions(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Submission).offset(skip).limit(limit).all()
 
@@ -151,6 +158,7 @@ def delete_submission(db: Session, submission_id: int):
     db.commit()
 
 # Messages
+# The message-related functions allow for creating new messages within groups and retrieving messages by group ID, ordered by creation time.
 def create_message(db: Session, message: schemas.MessageCreate) -> models.Message:
     db_msg = models.Message(
         group_id=message.group_id,
@@ -174,6 +182,7 @@ def get_messages_by_group(db: Session, group_id: int, skip: int = 0, limit: int 
     )
 
 # Assignments
+# The assignment-related functions include operations for listing all assignments, creating new assignments (restricted to lecturers), and deleting assignments (also restricted to lecturers).
 def get_assignments(db: Session) -> List[models.Assignment]:
     return db.query(models.Assignment).order_by(models.Assignment.created_at.desc()).all()
 
