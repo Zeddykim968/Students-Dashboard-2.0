@@ -125,7 +125,7 @@ lecturer = models.Student(
     name="Lecturer",
     reg_no="LECTURER/001",
     email="lecturer@ku.ac.ke",
-    password=pwd_context.hash("lecturer123"),
+    password=pwd_context.hash("Lecturer2025"),
     role="lecturer",
     group_id=None,
     must_change_password=False,
@@ -138,4 +138,4 @@ db.close()
 print(f"Done! Seeded {len(group_names)} groups and {len(students_data)} students.")
 print(f"\nAll student uniform password: {UNIFORM_PASSWORD}")
 print("Students will be prompted to change their password on first login.")
-print("\nLecturer login: lecturer@ku.ac.ke / lecturer123")
+print("\nLecturer login: lecturer@ku.ac.ke / LecturerKU@2025")

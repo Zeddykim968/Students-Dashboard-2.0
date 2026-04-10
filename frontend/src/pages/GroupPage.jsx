@@ -1,13 +1,11 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import { groupsAPI, submissionsAPI } from '../services/api'
-import { useAuth } from '../context/AuthContext'
+import { groupsAPI } from '../services/api'
 import GroupView from '../components/GroupView'
 import { toast } from 'react-hot-toast'
 
 const GroupPage = () => {
   const { id } = useParams()
-  const { role } = useAuth()
   const [group, setGroup] = useState(null)
   const [loading, setLoading] = useState(true)
 

@@ -21,7 +21,7 @@ def get_student(db: Session, student_id: int) -> models.Student:
     return student
 
 def get_student_by_email(db: Session, email: str) -> Optional[models.Student]:
-    return db.query(models.Student).filter(models.Student.email == email).first()
+    return db.query(models.Student).filter(models.Student.email == email.strip().lower()).first()
 
 def get_students(db: Session, skip: int = 0, limit: int = 100) -> List[models.Student]:
     return db.query(models.Student).filter(models.Student.role == "student").offset(skip).limit(limit).all()
@@ -40,6 +40,16 @@ def create_student(db: Session, student: schemas.StudentCreate):
     db.commit()
     db.refresh(db_student)
     return db_student
+
+def reset_student_password(db: Session, student_id: int, new_password: str = "Arch@2025") -> models.Student:
+    student = get_student(db, student_id)
+    student.password = pwd_context.hash(new_password)
+    student.must_change_password = True
+    student.reset_token = None
+    student.reset_token_expiry = None
+    db.commit()
+    db.refresh(student)
+    return student
 
 def change_password(db: Session, student_id: int, current_password: str, new_password: str) -> models.Student:
     student = get_student(db, student_id)

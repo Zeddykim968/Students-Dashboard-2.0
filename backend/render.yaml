@@ -10,15 +10,23 @@ services:
           name: student-group-db
           property: connectionString
       - key: SECRET_KEY
-        generateValue: true
+        value: f91a46a8d582acd498f5730f0d679bd65a3024489d3b0b24282984fb7bc99673
       - key: ALLOWED_ORIGINS
         value: https://assignments-upload-sable.vercel.app
       - key: CLOUDINARY_CLOUD_NAME
+<<<<<<< HEAD
         sync: false
       - key: CLOUDINARY_API_KEY
         sync: false
       - key: CLOUDINARY_API_SECRET
         sync: false  
+=======
+        value: dnajlpzzf
+      - key: CLOUDINARY_API_KEY
+        value: "981827112162362"
+      - key: CLOUDINARY_API_SECRET
+        value: S2khxgJcCqwU6aV_C_-P5iXDBN8
+>>>>>>> a4fac41769f427bf35d0e94cdfd0a2c0edc7d7c1
 
 databases:
   - name: student-group-db

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useAuth } from '../context/AuthContext'
-import { submissionsAPI } from '../services/api'
+import { submissionsAPI, groupsAPI } from '../services/api'
 import { toast } from 'react-hot-toast'
 import { useDropzone } from 'react-dropzone'
 import { Upload, FileText, Image, Download, Trash2, File, Clock, CheckCircle } from 'lucide-react'
@@ -41,11 +41,12 @@ const GRADE_COLORS = {
 }
 
 const MySubmissions = () => {
-  const { user } = useAuth()
+  const { user, updateUser } = useAuth()
   const [submissions, setSubmissions] = useState([])
   const [loading, setLoading] = useState(true)
   const [desc, setDesc] = useState('')
   const [uploading, setUploading] = useState(false)
+  const [groupId, setGroupId] = useState(user?.group_id || null)
 
   const fetchSubmissions = async () => {
     if (!user?.id) return
@@ -56,19 +57,39 @@ const MySubmissions = () => {
     finally { setLoading(false) }
   }
 
-  useEffect(() => { fetchSubmissions() }, [user])
+  useEffect(() => {
+    const init = async () => {
+      let gid = user?.group_id
+      if (!gid && user?.id) {
+        try {
+          const grp = await groupsAPI.getMyGroup()
+          if (grp?.id) {
+            gid = grp.id
+            setGroupId(grp.id)
+            updateUser({ group_id: grp.id })
+          }
+        } catch {}
+      } else if (gid) {
+        setGroupId(gid)
+      }
+      fetchSubmissions()
+    }
+    init()
+  }, [user?.id])
 
   const onDrop = useCallback(async (files) => {
     const file = files[0]
-    if (!file || !user?.id || !user?.group_id) {
-      toast.error('You must be in a group to submit')
+    if (!file || !user?.id) return
+    const gid = groupId || user?.group_id
+    if (!gid) {
+      toast.error('You are not assigned to a group yet')
       return
     }
     setUploading(true)
     const fd = new FormData()
     fd.append('file', file)
     fd.append('student_id', user.id)
-    fd.append('group_id', user.group_id)
+    fd.append('group_id', gid)
     fd.append('description', desc)
     try {
       await submissionsAPI.create(fd)
@@ -77,7 +98,7 @@ const MySubmissions = () => {
       fetchSubmissions()
     } catch (e) { toast.error(e.message) }
     finally { setUploading(false) }
-  }, [user, desc])
+  }, [user, groupId, desc])
 
   const handleDelete = async (id) => {
     if (!confirm('Delete this submission?')) return

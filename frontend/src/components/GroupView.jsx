@@ -1,11 +1,11 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useAuth } from '../context/AuthContext'
-import { submissionsAPI } from '../services/api'
+import { submissionsAPI, studentsAPI } from '../services/api'
 import GroupChat from './GroupChat'
 import { toast } from 'react-hot-toast'
 import {
   Upload, Download, FileText, Image, Star, MessageSquare,
-  Users, CheckCircle, Clock, Trash2, File
+  Users, CheckCircle, Clock, Trash2, File, KeyRound
 } from 'lucide-react'
 import { useDropzone } from 'react-dropzone'
 
@@ -152,6 +152,7 @@ function UploadSlot({ groupId, studentId, onUploaded }) {
 function StudentSlot({ student, submission, isMe, isLecturer, groupId, onRefresh }) {
   const initials = student.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
   const [deleting, setDeleting] = useState(false)
+  const [resetting, setResetting] = useState(false)
 
   const handleDelete = async () => {
     if (!confirm('Delete this submission?')) return
@@ -162,6 +163,16 @@ function StudentSlot({ student, submission, isMe, isLecturer, groupId, onRefresh
       onRefresh()
     } catch { toast.error('Delete failed') }
     finally { setDeleting(false) }
+  }
+
+  const handleResetPassword = async () => {
+    if (!confirm(`Reset ${student.name}'s password to Arch@2025? They'll be required to change it on next login.`)) return
+    setResetting(true)
+    try {
+      await studentsAPI.resetPassword(student.id)
+      toast.success(`Password reset for ${student.name}`)
+    } catch { toast.error('Password reset failed') }
+    finally { setResetting(false) }
   }
 
   return (
@@ -265,6 +276,19 @@ function StudentSlot({ student, submission, isMe, isLecturer, groupId, onRefresh
           {isMe && !isLecturer && (
             <UploadSlot groupId={groupId} studentId={student.id} onUploaded={onRefresh} />
           )}
+        </div>
+      )}
+
+      {isLecturer && (
+        <div className="mt-3 pt-3 border-t border-gray-100">
+          <button
+            onClick={handleResetPassword}
+            disabled={resetting}
+            className="flex items-center gap-1.5 text-xs text-orange-500 hover:text-orange-700 font-medium disabled:opacity-50"
+          >
+            <KeyRound className="h-3.5 w-3.5" />
+            {resetting ? 'Resetting...' : 'Reset Password'}
+          </button>
         </div>
       )}
     </div>

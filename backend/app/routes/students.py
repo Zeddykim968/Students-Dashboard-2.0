@@ -24,7 +24,23 @@ def read_students(db: Session = Depends(get_db)):
 def read_student(student_id: int, db: Session = Depends(get_db)):
     return crud.get_student(db, student_id)
 
+<<<<<<< HEAD
 # The email_students endpoint allows lecturers to send emails to students. It accepts a list of student IDs (or sends to all students if no IDs are provided), along with the email subject and body. It checks the user's role to ensure that only lecturers can send emails and returns a summary of the email sending results in the response.
+=======
+@router.post("/students/{student_id}/reset-password")
+def reset_student_password(
+    student_id: int,
+    db: Session = Depends(get_db),
+    current_user: schemas.TokenPayload = Depends(get_current_user)
+):
+    lecturer = crud.get_student(db, current_user.student_id)
+    if lecturer.role != "lecturer":
+        raise HTTPException(status_code=403, detail="Only lecturers can reset passwords")
+    crud.reset_student_password(db, student_id)
+    student = crud.get_student(db, student_id)
+    return {"message": f"Password reset to Arch@2025 for {student.name}. They must change it on next login."}
+
+>>>>>>> a4fac41769f427bf35d0e94cdfd0a2c0edc7d7c1
 @router.post("/students/email")
 def email_students(
     data: schemas.EmailStudentsRequest,

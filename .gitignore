@@ -19,3 +19,6 @@ frontend/public/index.html
 students_database.sql
 students-database.session.sql
 backend/students_dashboard.db
+
+# Uploaded files (stored on Cloudinary in production)
+backend/uploads/
