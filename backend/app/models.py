@@ -38,7 +38,7 @@ class Group(Base):
     messages = relationship("Message", back_populates="group", order_by="Message.created_at")
 
 # The Submission model tracks file uploads and grading. 
-Class Submission(Base):
+class Submission(Base):
     __tablename__ = "submissions"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -55,7 +55,7 @@ Class Submission(Base):
     group = relationship("Group", back_populates="submissions")
 
 # The Message model allows for communication within groups.
-Class Message(Base):
+class Message(Base):
     __tablename__ = "messages"
 
     id = Column(Integer, primary_key=True, index=True)
