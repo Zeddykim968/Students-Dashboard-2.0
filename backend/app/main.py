@@ -33,7 +33,7 @@ def _run_migrations():
 async def lifespan(app: FastAPI):
     Base.metadata.create_all(bind=engine)
     _run_migrations()
-    _auto_seed()
+    #_auto_seed()
     os.makedirs("uploads/submissions", exist_ok=True)
     yield
 
