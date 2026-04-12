@@ -1,0 +1,171 @@
+😂 welcome back — hope church was good!
+What you’re describing is actually a clean, scalable system design, not just “frontend fixes.” If you structure this properly now, your whole project becomes powerful.
+Let me break it down into clear architecture + UI behavior + how to implement so you don’t get stuck.
+🔥 1. SYSTEM OVERVIEW (WHAT YOU’RE BUILDING)
+You essentially have 3 user roles:
+👨‍🎓 Student
+Sees:
+Their group page
+Their own submission page
+Can:
+Upload (PDF, PNG, JPEG)
+Edit their own work
+View group members’ contributions
+👩‍🏫 Lecturer
+Sees:
+All groups
+Can:
+Click → open group
+View all submissions
+Grade (student + group)
+Comment
+Upload feedback
+🔐 Auth System
+Login determines:
+Student → goes to student dashboard
+Lecturer → goes to lecturer dashboard
+🎯 2. FRONTEND STRUCTURE (VERY IMPORTANT)
+You need 3 main pages + reusable components
+🏠 1. HOME PAGE (GROUP LIST)
+This is your first page AFTER login.
+UI Behavior:
+Grid or cards layout
+Each group = a card
+Show:
+Group name
+4 members (preview)
+Scroll to see more (like you said)
+🔥 Key idea:
+Show only 4 members → expand or scroll to see 6–7
+Example Structure:
+JSX
+<GroupCard>
+  <GroupTitle />
+  <MembersPreview />  // show 4
+  <ViewMoreButton />  // or scroll
+</GroupCard>
+👥 2. GROUP PAGE (SHARED VIEW)
+This page is the heart of your system
+Should look like:
+Your sketch (sun path, movement etc.) → think of this as uploaded content
+Members list
+Submissions section
+Components:
+JSX
+<GroupHeader />
+<MemberList />
+<GroupUploads />
+<Comments />
+👤 3. STUDENT PAGE (PERSONAL)
+Same layout as group page BUT:
+Extra features:
+Upload button
+Edit/delete submission
+JSX
+<UploadForm />
+<MySubmissions />
+🔁 3. CRITICAL FEATURE (SYNC DATA)
+You said:
+“should also reflect uploads on the group page”
+🔥 THIS IS BACKEND-DRIVEN
+Meaning:
+Student uploads → saved in DB
+Group page fetches → displays all uploads
+Example Data Model
+JSON
+Student:
+{
+  id,
+  name,
+  group_id
+}
+
+Group:
+{
+  id,
+  name
+}
+
+Submission:
+{
+  id,
+  student_id,
+  group_id,
+  file_url,
+  type,
+  created_at
+}
+🎓 4. LECTURER PAGE
+Layout:
+Same as group page BUT with controls:
+JSX
+<GroupView>
+  <Submissions />
+  <GradeInput />
+  <CommentBox />
+</GroupView>
+Extra Features:
+Grade per student
+Grade per group
+Add comments
+🔐 5. LOGIN SYSTEM (ENTRY POINT)
+This is your FIRST page.
+Flow:
+Plain text
+Login → Backend verifies → returns role
+
+IF student → /student/dashboard
+IF lecturer → /lecturer/dashboard
+Example (React Router):
+JSX
+if (user.role === "student") {
+  navigate("/student");
+} else {
+  navigate("/lecturer");
+}
+🧠 6. HOW TO IMPLEMENT (STEP BY STEP)
+Don’t rush. Do it like this:
+STEP 1: Fix UI Layout
+Create:
+GroupCard
+GroupPage
+StudentPage
+STEP 2: Add Upload UI
+File input
+Restrict types:
+HTML
+<input type="file" accept=".pdf,.png,.jpeg" />
+STEP 3: Connect to Backend
+POST upload
+GET submissions
+STEP 4: Role-Based Routing
+Store user role (JWT or state)
+Redirect accordingly
+STEP 5: Lecturer Features
+Add grading inputs
+Add comments
+⚠️ 7. COMMON MISTAKES (DON’T FALL HERE)
+❌ Making separate UI for student & lecturer
+→ ✅ reuse same component, just add permissions
+❌ Hardcoding group data
+→ ✅ fetch from API
+❌ Upload without storage logic
+→ ✅ store file + metadata
+💡 8. PRO TIP (THIS WILL LEVEL YOU UP)
+Make your UI component-driven
+Instead of:
+JSX
+StudentPage.jsx
+LecturerPage.jsx
+Do:
+JSX
+<GroupView mode="student" />
+<GroupView mode="lecturer" />
+🚀 WHAT YOU SHOULD DO NEXT
+Tell me:
+👉 Are you using React + Tailwind or plain HTML/CSS?
+Then I’ll:
+Build your exact UI layout
+Give you ready-to-use components
+Connect it to your FastAPI backend cleanly
+We can literally turn this into a portfolio-level project 💯
