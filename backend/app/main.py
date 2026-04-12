@@ -1,6 +1,3 @@
-# This file is the main entry point for the FastAPI application.
-#  It sets up the application, including database initialization, CORS configuration, and route registration.
-# It also includes a simple root endpoint for testing.
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -11,7 +8,7 @@ import os
 from .db import engine, Base, SessionLocal
 from .routes import auth, students, groups, submissions, assignments
 
-# This function runs raw SQL commands to safely add new columns to existing tables without using Alembic.
+
 def _run_migrations():
     """Safely add new columns to existing tables without Alembic."""
     migrations = [
@@ -28,9 +25,6 @@ def _run_migrations():
                 pass
         conn.commit()
 
-<<<<<<< HEAD
-# The lifespan function is used to perform setup tasks when the application starts, such as creating database tables and running migrations.
-=======
 
 def _auto_seed():
     """Seed groups, students and lecturer if the database is empty."""
@@ -158,7 +152,6 @@ def _auto_seed():
         db.close()
 
 
->>>>>>> a4fac41769f427bf35d0e94cdfd0a2c0edc7d7c1
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     Base.metadata.create_all(bind=engine)
@@ -167,19 +160,9 @@ async def lifespan(app: FastAPI):
     os.makedirs("uploads/submissions", exist_ok=True)
     yield
 
-# The FastAPI application is created with the specified title and lifespan function. CORS middleware is added to allow requests from any origin, and the API routes are included under the "/api" prefix. Finally, a static files route is set up to serve uploaded files, and a simple root endpoint is defined.
+
 app = FastAPI(title="Student Group Assignment System API", lifespan=lifespan)
 
-<<<<<<< HEAD
-ALLOWED_ORIGINS = os.getenv(
-    "ALLOWED_ORIGINS",
-    "ALLOWED_ORIGINS=http://localhost:3000,http://localhost:5000,http://127.0.0.1:5173"
-).split(",")
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=ALLOWED_ORIGINS,
-=======
 _raw_origins = os.getenv("ALLOWED_ORIGINS", "")
 _extra_origins = [o.strip() for o in _raw_origins.split(",") if o.strip()]
 _allow_origins = _extra_origins if _extra_origins else ["*"]
@@ -187,7 +170,6 @@ _allow_origins = _extra_origins if _extra_origins else ["*"]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=_allow_origins,
->>>>>>> a4fac41769f427bf35d0e94cdfd0a2c0edc7d7c1
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -199,7 +181,6 @@ app.include_router(groups.router, prefix="/api")
 app.include_router(submissions.router, prefix="/api")
 app.include_router(assignments.router, prefix="/api")
 
-# Serve uploaded files from the "uploads" directory
 app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 @app.get("/")

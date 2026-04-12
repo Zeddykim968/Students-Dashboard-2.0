@@ -1,13 +1,9 @@
-# This file defines the SQLAlchemy models for the Student Group Assignment System. 
-# It includes models for students, groups, submissions, messages, and assignments, along with their relationships. Each model corresponds to a database table, and the fields represent the columns in those tables.
-# The Student model includes fields for authentication and password management, while the Group model manages the relationships between students and their submissions. The Submission model tracks file uploads and grading, and the Message model allows for communication within groups. Finally, the Assignment model defines the structure for assignments created by lecturers.
-
 from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Text, Boolean
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from .db import Base
 
-# SQLAlchemy models for the Student Group Assignment System
+
 class Student(Base):
     __tablename__ = "students"
 
@@ -26,7 +22,7 @@ class Student(Base):
     messages = relationship("Message", back_populates="student")
     group = relationship("Group", back_populates="students")
 
-# The Group model manages the relationships between students and their submissions. 
+
 class Group(Base):
     __tablename__ = "groups"
 
@@ -37,7 +33,8 @@ class Group(Base):
     students = relationship("Student", back_populates="group")
     messages = relationship("Message", back_populates="group", order_by="Message.created_at")
 
-# The Submission model tracks file uploads and grading. 
+
+class Submission(Base):
     __tablename__ = "submissions"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -53,7 +50,8 @@ class Group(Base):
     student = relationship("Student", back_populates="submissions")
     group = relationship("Group", back_populates="submissions")
 
-# The Message model allows for communication within groups.
+
+class Message(Base):
     __tablename__ = "messages"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -65,7 +63,7 @@ class Group(Base):
     group = relationship("Group", back_populates="messages")
     student = relationship("Student", back_populates="messages")
 
-# The Assignment model defines the structure for assignments created by lecturers.
+
 class Assignment(Base):
     __tablename__ = "assignments"
 
