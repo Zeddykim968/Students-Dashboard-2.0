@@ -1,0 +1,24 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+.env
+
+# Node (React)
+node_modules/
+.vscode/settings.json
+dist/
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+frontend/public/index.html
+students_database.sql
+students-database.session.sql
+backend/students_dashboard.db
+
+# Uploaded files (stored on Cloudinary in production)
+backend/uploads/

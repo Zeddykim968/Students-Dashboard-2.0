@@ -1,0 +1,15 @@
+{
+  "buildCommand": "npm install --prefix frontend --legacy-peer-deps && npm run build --prefix frontend",
+  "outputDirectory": "frontend/dist",
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://student-uploads-api.onrender.com/api/:path*"
+    },
+    {
+      "source": "/uploads/:path*",
+      "destination": "https://student-uploads-api.onrender.com/uploads/:path*"
+    },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}

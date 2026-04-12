@@ -1,0 +1,71 @@
+modules = ["nodejs-20", "python-3.12", "web"]
+[agent]
+expertMode = true
+
+[nix]
+channel = "stable-25_05"
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Backend API"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Start application"
+
+[[workflows.workflow]]
+name = "Backend API"
+author = "agent"
+
+[workflows.workflow.metadata]
+outputType = "console"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd backend && python -m uvicorn app.main:app --host 0.0.0.0 --port 8000"
+waitForPort = 8000
+
+[[workflows.workflow]]
+name = "Start application"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd frontend && npm run dev"
+waitForPort = 5000
+
+[workflows.workflow.metadata]
+outputType = "webview"
+
+[[ports]]
+localPort = 5000
+externalPort = 80
+
+[[ports]]
+localPort = 5001
+externalPort = 3001
+
+[[ports]]
+localPort = 8000
+externalPort = 8000
+
+[deployment]
+deploymentTarget = "autoscale"
+run = ["bash", "-c", "cd backend && gunicorn --bind 0.0.0.0:8000 --reuse-port --workers 2 app.main:app -k uvicorn.workers.UvicornWorker"]
+build = ["bash", "-c", "pip install -r backend/requirements.txt && cd frontend && npm install --legacy-peer-deps && npm run build"]
+
+[userenv]
+
+[userenv.shared]
+SECRET_KEY = "f91a46a8d582acd498f5730f0d679bd65a3024489d3b0b24282984fb7bc99673"
+CLOUDINARY_CLOUD_NAME = "dnajlpzzf"
+CLOUDINARY_API_KEY = "981827112162362"
+CLOUDINARY_API_SECRET = "S2khxgJcCqwU6aV_C_-P5iXDBN8"
