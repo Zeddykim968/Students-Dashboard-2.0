@@ -164,3 +164,9 @@ def read_student_submissions(student_id: int, db: Session = Depends(get_db)):
 @router.get("/submissions/group/{group_id}", response_model=list[schemas.SubmissionResponse])
 def read_group_submissions(group_id: int, db: Session = Depends(get_db)):
     return crud.get_submissions_by_group(db, group_id)
+
+
+# This function is used to get a database session for use in API routes. It creates a new session, yields it for use, and ensures that the session is properly closed after the request is completed.
+from services.cloudinary import upload_file
+from app.models import Assignment
+

@@ -7,7 +7,7 @@ from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
 from sqlalchemy import text
 import os
-
+from . import models
 from .db import engine, Base, SessionLocal
 from .routes import auth, students, groups, submissions, assignments
 
@@ -42,7 +42,7 @@ app = FastAPI(title="Student Group Assignment System API", lifespan=lifespan)
 
 ALLOWED_ORIGINS = os.getenv(
     "ALLOWED_ORIGINS",
-    "ALLOWED_ORIGINS=http://localhost:3000,http://localhost:5000,http://127.0.0.1:5173"
+    "http://localhost:3000,http://localhost:5000,http://127.0.0.1:5173"
 ).split(",")
 
 app.add_middleware(
