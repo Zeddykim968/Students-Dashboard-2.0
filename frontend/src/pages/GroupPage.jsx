@@ -3,9 +3,11 @@ import { useParams } from 'react-router-dom'
 import { groupsAPI } from '../services/api'
 import GroupView from '../components/GroupView'
 import { toast } from 'react-hot-toast'
+import { useAuth } from '../context/AuthContext'
 
 const GroupPage = () => {
   const { id } = useParams()
+  const { role } = useAuth()
   const [group, setGroup] = useState(null)
   const [loading, setLoading] = useState(true)
 
